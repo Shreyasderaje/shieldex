@@ -11,7 +11,19 @@ import { createAnalyzeRouter } from './routes/analyze.js';
 import { pathToFileURL } from 'node:url';
 
 const app = express();
-app.use(cors({ origin: ['http://localhost:3000', 'http://127.0.0.1:3000'] }));
+const localFrontendOrigins = new Set(['http://localhost:3000', 'http://127.0.0.1:3000']);
+const configuredFrontendOrigins = (process.env.FRONTEND_ORIGIN || '')
+  .split(',')
+  .map((origin) => origin.trim().replace(/\/$/, ''))
+  .filter(Boolean);
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || localFrontendOrigins.has(origin) || configuredFrontendOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  },
+}));
 // 12 MB body cap ≈ two 4 MB files + envelope; per-file 4 MB checks in the route.
 app.use(express.json({ limit: '12mb' }));
 

@@ -3,6 +3,7 @@ import FileUpload from './components/FileUpload.jsx';
 import RiskReport from './components/RiskReport.jsx';
 import LoadingSpinner from './components/LoadingSpinner.jsx';
 import { WorkspaceSidebar, WORKSPACE_SECTIONS } from './components/SecurityWorkspace.jsx';
+import { apiUrl } from './api.js';
 
 function App() {
   const [report, setReport] = useState(null);
@@ -15,7 +16,7 @@ function App() {
     setLoading('live');
     setError(null);
     try {
-      const response = await fetch('/api/analyze', {
+      const response = await fetch(apiUrl('/api/analyze'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ packageJson, lockJson }),
@@ -34,7 +35,7 @@ function App() {
     setLoading('demo');
     setError(null);
     try {
-      const response = await fetch('/api/demo');
+      const response = await fetch(apiUrl('/api/demo'));
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || `Server error ${response.status}`);
       setReport(data);
