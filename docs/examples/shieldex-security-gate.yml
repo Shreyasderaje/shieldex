@@ -1,0 +1,24 @@
+# Copy this workflow into a Node.js application repository together with
+# SHIELDEX's backend folder. It scans that repository's own manifest and lockfile.
+name: SHIELDEX dependency security gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install SHIELDEX scanner dependencies
+        run: npm ci --prefix backend
+      - name: Scan dependencies and enforce policy
+        run: node backend/cli/security-gate.js --package-json package.json --lockfile package-lock.json --fail-on HIGH --unknown fail

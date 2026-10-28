@@ -1,0 +1,19 @@
+{
+  "name": "dependency-risk-radar-backend",
+  "version": "1.0.0",
+  "description": "Node.js dependency security analyzer (OSV.dev + npm registry)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "security:gate": "node cli/security-gate.js",
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
